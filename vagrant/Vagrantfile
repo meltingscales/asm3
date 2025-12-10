@@ -1,0 +1,24 @@
+# Vagrantfile - vagrant/Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+
+  # Forward a port if you need to run a local webserver (optional)
+  # config.vm.network "forwarded_port", guest: 8000, host: 8000
+
+  # Sync project root into /vagrant (default)
+  config.vm.synced_folder "..", "/vagrant", type: "virtualbox"
+
+  # Give the VM enough resources for desktop environment
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "8192"
+    vb.cpus = 4
+    vb.name = "asm3-dev"
+    vb.gui = true
+    vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.customize ["modifyvm", :id, "--graphicscontroller", "vmsvga"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "on"]
+  end
+
+  # Use an external provision script so it's easy to edit
+  config.vm.provision "shell", path: "provision.sh"
+end
